@@ -29,17 +29,34 @@ public class CharacterCustomizer : MonoBehaviour {
     private Vector2Int _direction = Vector2Int.down;
 
 
-    private void Awake() {
+    private void Start() {
         _animator = GetComponent<Animator>();
+        SyncWithSaveData();
     }
 
 
-    private void FixedUpdate() {
+    private void Update() {
+        UpdateAnimations();
+    }
+
+    private void SyncWithSaveData() {
+        bodyIndex = GameManager.Instance.PlayerData.bodyIndex;
+        hairIndex = GameManager.Instance.PlayerData.hairIndex;
+        outfitIndex = GameManager.Instance.PlayerData.outfitIndex;
         bodySpriteLibrary.spriteLibraryAsset = bodySpriteList[bodyIndex];
         hairSpriteLibrary.spriteLibraryAsset = hairSpriteList[hairIndex];
         outfitSpriteLibrary.spriteLibraryAsset = outfitsSpriteList[outfitIndex];
+    }
+
+    private void UpdateAnimations() {
         _animator.SetFloat(XAxis, _direction.x);
         _animator.SetFloat(YAxis, _direction.y);
+    }
+
+    private void UpdateCharacterIndex() {
+        GameManager.Instance.PlayerData.hairIndex = hairIndex;
+        GameManager.Instance.PlayerData.bodyIndex = bodyIndex;
+        GameManager.Instance.PlayerData.outfitIndex = outfitIndex;
     }
 
     public void UpDirection() {
@@ -61,13 +78,23 @@ public class CharacterCustomizer : MonoBehaviour {
 
     public void SetBodySpriteIndex() {
         bodyIndex = (bodyIndex + 1) % bodySpriteList.Count;
+        bodySpriteLibrary.spriteLibraryAsset = bodySpriteList[bodyIndex];
+        UpdateCharacterIndex();
     }
 
     public void SetHairSpriteIndex() {
         hairIndex = (hairIndex + 1) % hairSpriteList.Count;
+        hairSpriteLibrary.spriteLibraryAsset = hairSpriteList[hairIndex];
+        UpdateCharacterIndex();
     }
 
     public void SetOutfitSpriteIndex() {
         outfitIndex = (outfitIndex + 1) % outfitsSpriteList.Count;
+        outfitSpriteLibrary.spriteLibraryAsset = outfitsSpriteList[outfitIndex];
+        UpdateCharacterIndex();
+    }
+
+    public void SaveCharacterData() {
+        GameManager.Instance.SaveGameDate();
     }
 }
