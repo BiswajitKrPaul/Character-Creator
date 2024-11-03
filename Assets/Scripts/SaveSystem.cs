@@ -21,7 +21,6 @@ public class SaveSystem : MonoBehaviour {
             Debug.Log("Game Loaded from: " + _GetFilePath());
             return playerData;
         }
-
         Debug.LogWarning("Save file not found!");
         return null;
     }
